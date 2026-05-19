@@ -20,13 +20,7 @@ const logFormat = winston.format.combine(
 export const logger = winston.createLogger({
   level: config.nodeEnv === 'production' ? 'warn' : 'debug',
   format: logFormat,
-  transports: [
-    new winston.transports.Console(),
-    ...(config.nodeEnv === 'production'
-      ? [
-          new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-          new winston.transports.File({ filename: 'logs/combined.log' }),
-        ]
-      : []),
-  ],
+  // In container platforms like Render, filesystem writes may be restricted.
+  // Keep logs on stdout/stderr so the platform can capture them.
+  transports: [new winston.transports.Console()],
 });
