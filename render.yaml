@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: smart-leads-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    port: 5000
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
