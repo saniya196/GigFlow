@@ -31,4 +31,4 @@ export const authService = {
   getToken(): string | null {
     return localStorage.getItem('auth_token');
   },
-}; 
+};
