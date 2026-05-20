@@ -4,36 +4,33 @@ import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Users } from 'lucide-react';
+import { Mail, ArrowLeft } from 'lucide-react';
 import { authService } from '../services/authService';
-import { useAuthStore } from '../store/authStore';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
-import type { LoginFormData } from '../types';
 
-const loginSchema = z.object({
+const forgotPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
 });
 
-export const LoginPage = () => {
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+
+export const ForgotPasswordPage = () => {
   const navigate = useNavigate();
-  const { setAuth } = useAuthStore();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
+  } = useForm<ForgotPasswordFormData>({ resolver: zodResolver(forgotPasswordSchema) });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: authService.login,
-    onSuccess: ({ user, token }) => {
-      setAuth(user, token);
-      toast.success(`Welcome back, ${user.name}!`);
-      navigate('/leads');
+    mutationFn: (data: ForgotPasswordFormData) => authService.forgotPassword(data.email),
+    onSuccess: () => {
+      toast.success('Check your email for password reset instructions');
+      navigate('/login');
     },
-    onError: () => toast.error('Invalid email or password'),
+    onError: () => toast.error('Failed to send reset email. Please try again.'),
   });
 
   return (
@@ -42,13 +39,18 @@ export const LoginPage = () => {
         <div className="absolute left-[-5rem] top-[-5rem] h-80 w-80 rounded-full bg-sky-400/15 blur-3xl" />
         <div className="absolute bottom-[-6rem] right-[-4rem] h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl" />
       </div>
+
       <div className="relative w-full max-w-md">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-600 shadow-lg shadow-sky-500/20">
-            <Users className="h-7 w-7 text-white" />
+            <Mail className="h-7 w-7 text-white" />
           </div>
-          <h1 className="font-display text-3xl font-bold tracking-tight text-slate-950 dark:text-white">Welcome back</h1>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Sign in to GigFlow – Smart Leads Dashboard</p>
+          <h1 className="font-display text-3xl font-bold tracking-tight text-slate-950 dark:text-white">
+            Forgot your password?
+          </h1>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            Enter your email and we'll send you a link to reset it
+          </p>
         </div>
 
         <div className="rounded-3xl border border-slate-200/80 bg-white/85 p-8 shadow-[0_24px_70px_-30px_rgba(15,23,42,0.35)] backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
@@ -61,29 +63,20 @@ export const LoginPage = () => {
               autoComplete="email"
               {...register('email')}
             />
-            <Input
-              label="Password"
-              type="password"
-              placeholder="••••••••"
-              error={errors.password?.message}
-              autoComplete="current-password"
-              {...register('password')}
-                       <div className="text-right">
-                         <Link to="/forgot-password" className="text-sm font-medium text-sky-700 hover:text-sky-600 dark:text-sky-400 dark:hover:text-sky-300">
-                           Forgot password?
-                         </Link>
-                       </div>
-            />
             <Button type="submit" isLoading={isPending} className="w-full" size="lg">
-              Sign in
+              Send reset link
             </Button>
           </form>
-          <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-sky-700 hover:text-sky-600 dark:text-sky-400 dark:hover:text-sky-300">
-              Sign up
+
+          <div className="mt-6 flex items-center justify-center">
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-2 text-sm font-medium text-sky-700 hover:text-sky-600 dark:text-sky-400 dark:hover:text-sky-300"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to login
             </Link>
-          </p>
+          </div>
         </div>
       </div>
     </div>

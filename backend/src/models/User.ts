@@ -31,6 +31,14 @@ const userSchema = new Schema<IUser>(
       enum: ['admin', 'sales'],
       default: 'sales',
     },
+    passwordResetToken: {
+      type: String,
+      default: undefined,
+    },
+    passwordResetExpiry: {
+      type: Date,
+      default: undefined,
+    },
   },
   {
     timestamps: true,

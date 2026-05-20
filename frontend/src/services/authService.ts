@@ -15,9 +15,24 @@ export const authService = {
   },
 
   async getProfile(): Promise<User> {
-    const { data } = await apiClient.get<ApiResponse<{ user: User }>>('/auth/profile');
-    if (!data.data?.user) throw new Error('Failed to fetch profile');
-    return data.data.user;
+     async forgotPassword(email: string): Promise<void> {
+       const { data } = await apiClient.post<ApiResponse<void>>('/auth/forgot-password', { email });
+       if (!data.data) throw new Error('Failed to send reset email');
+     },
+
+     async resetPassword(email: string, token: string, newPassword: string): Promise<void> {
+       const { data } = await apiClient.post<ApiResponse<void>>('/auth/reset-password', {
+         email,
+         token,
+         newPassword,
+       });
+       if (!data.data) throw new Error('Password reset failed');
+     },
+
+     async getProfile(): Promise<User> {
+       const { data } = await apiClient.get<ApiResponse<{ user: User }>>('/auth/profile');
+       if (!data.data?.user) throw new Error('Failed to fetch profile');
+       return data.data.user;
   },
 
   setToken(token: string): void {

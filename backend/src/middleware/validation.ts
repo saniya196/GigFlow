@@ -76,3 +76,19 @@ export const leadsQueryValidation = [
   query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
   handleValidationErrors,
 ];
+
+export const forgotPasswordValidation = [
+  body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),
+  handleValidationErrors,
+];
+
+export const resetPasswordValidation = [
+  body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),
+  body('token').trim().notEmpty().withMessage('Reset token is required'),
+  body('newPassword')
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 8 characters')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Password must contain uppercase, lowercase, and a number'),
+  handleValidationErrors,
+];

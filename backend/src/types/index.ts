@@ -12,6 +12,8 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: UserRole;
+  passwordResetToken?: string;
+  passwordResetExpiry?: Date;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
