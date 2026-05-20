@@ -1,6 +1,7 @@
 import { apiClient } from './apiClient';
 import { ApiResponse, AuthResponse, LoginFormData, RegisterFormData, User } from '../types';
 
+// v2: Added forgot password support
 export const authService = {
   async login(credentials: LoginFormData): Promise<AuthResponse> {
     const { data } = await apiClient.post<ApiResponse<AuthResponse>>('/auth/login', credentials);
