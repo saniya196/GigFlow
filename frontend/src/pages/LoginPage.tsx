@@ -68,11 +68,6 @@ export const LoginPage = () => {
               error={errors.password?.message}
               autoComplete="current-password"
               {...register('password')}
-                       <div className="text-right">
-                         <Link to="/forgot-password" className="text-sm font-medium text-sky-700 hover:text-sky-600 dark:text-sky-400 dark:hover:text-sky-300">
-                           Forgot password?
-                         </Link>
-                       </div>
             />
             <Button type="submit" isLoading={isPending} className="w-full" size="lg">
               Sign in
